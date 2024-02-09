@@ -23,6 +23,8 @@ def write_bytes_to_disk(buffer: BytesIO, filepath: Path):
     logger.info(f'Saving contents to {filepath.name}')
 
     # Write the data to the file
+    parent_path = filepath.parent
+    parent_path.mkdir(parents=True, exist_ok=True)
     with open(filepath, 'wb') as file:
         file.write(buffer.getvalue())
 

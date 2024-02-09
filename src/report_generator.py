@@ -18,7 +18,6 @@ class ReportGenerator:
             self.filingMonth.get_fiscal_year().replace('/', '-'),
             self.filingMonth.nepali_month_name(),
         )
-        self.work_dir.mkdir(parents=True, exist_ok=True)
         self._lakh_busters: Optional[LakhBusters] = None
 
     @property
