@@ -26,8 +26,12 @@ class MenuOption:
     def execute(self):
         """
         Executes the function with the provided arguments and keyword arguments.
+
+        Returns:
+            The result of executing the function.
         """
-        self.function(*self.args, **self.kwargs)
+        res = self.function(*self.args, **self.kwargs)
+        return res
 
 
 class Menu:
