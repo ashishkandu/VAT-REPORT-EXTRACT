@@ -20,6 +20,14 @@ logger = LoggerFactory.get_logger(__name__)
 
 class Report:
     def __init__(self, book: Book, filing_month: FilingMonth, work_dir: Path):
+        """
+        Initialize the object with the provided book, filing month, and work directory.
+
+        Args:
+            book (Book): The book to be initialized with.
+            filing_month (FilingMonth): The filing month to be initialized with.
+            work_dir (Path): The work directory to be initialized with.
+        """
         self.book = book
 
         self.filing_month = filing_month
@@ -36,12 +44,24 @@ class Report:
 
     @property
     def raw_transactions(self) -> pd.DataFrame:
+        """
+        Property to lazily load raw transactions from the database.
+
+        Returns:
+        pd.DataFrame: The raw transactions data.
+        """
         if self._raw_transactions is None:
             self._raw_transactions = self.query_db()
         return self._raw_transactions
 
     @property
     def transactions(self) -> pd.DataFrame:
+        """
+        Property method to access transactions data.
+
+        Returns:
+        pd.DataFrame: The transactions data.
+        """
         if self._transactions is None:
             self._transactions = self.process_transactions()
         return self._transactions
