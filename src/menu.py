@@ -13,10 +13,11 @@ class MenuOption:
         """
         Initializes a new instance of the class with the given name, function, args, and kwargs.
 
-        :param name: str - the name of the option
-        :param function: callable - the function to be associated with the option
-        :param args: list - optional arguments for the function (default [])
-        :param kwargs: dict - optional keyword arguments for the function (default {})
+        Args:
+        name (str): The name of the instance.
+        function (callable): The function to be executed.
+        args (list): The arguments to be passed to the function (default is an empty list).
+        kwargs (dict): The keyword arguments to be passed to the function (default is an empty dictionary).
         """
         self.name = name
         self.function = function
