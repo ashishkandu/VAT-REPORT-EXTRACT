@@ -223,7 +223,7 @@ class Report:
         ) as writer:
 
             # Write the transaction data to the specified sheet, starting after the existing content
-            self._transactions.to_excel(
+            self.transactions.to_excel(
                 writer,
                 index=False,  # Exclude the DataFrame index
                 header=False,  # Exclude column headers
@@ -297,9 +297,10 @@ class Report:
         """
         Prints a formatted list of cancelled transactions to the console.
         """
-        print(f"\nCancelled Transactions:")  # Print a heading for the list
-        for transaction in self.cancelled_transactions:
-            print(f"- {transaction}")
+        if self.cancelled_transactions:
+            print(f"\nCancelled Transactions:")  # Print a heading for the list
+            for transaction in self.cancelled_transactions:
+                print(f"- {transaction}")
 
     def print_transactions_with_roundoff(self):
         """
