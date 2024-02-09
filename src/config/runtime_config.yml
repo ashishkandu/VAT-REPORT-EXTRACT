@@ -1,0 +1,61 @@
+# ['Bill Date', 'Transaction Date', 'Nepali Date', 'Transaction ID',
+#        'Bill Receiveable Person', 'Vat Pan No', 'Item', 'In', 'Out', 'Symbol',
+#        'Grand Total', 'Round Off', 'Total w Round', 'Taxable Amount',
+#        'Tax Amount', 'Reference No', 'Status', 'Modify Type', 'Why Update']
+sql: |
+  SELECT SystemTransaction.[Bill Date],
+          SystemTransaction.[Transaction Date],
+          CONCAT_WS('.', CalanderDate.[Year], CalanderDate.[Month], CalanderDate.[Day] ) as 'Nepali Date',
+          SystemTransaction.[Transaction ID],
+          SystemTransaction.[Bill Receiveable Person],
+          AccountProfileProduct.[Vat Pan No],
+          STRING_AGG(InventoryItem.[Inventory Name], '/') WITHIN GROUP (ORDER BY InventoryItem.[Inventory Name]) as 'Item',
+          SUM(PurchaseSalesItem.[Item In]) as 'In',
+          SUM(PurchaseSalesItem.[Item Out]) as 'Out',
+          InventoryUnit.Symbol,
+          PurchaseSalesAmount.[Grand Total],
+          PurchaseSalesAmount.[Round Off],
+          PurchaseSalesAmount.[Grand Total] + PurchaseSalesAmount.[Round Off] as 'Total w Round',
+          PurchaseSalesAmount.[Taxable Amount],
+          PurchaseSalesAmount.[Tax Amount],
+          SystemTransaction.[Reference No],
+          SystemTransaction.Status,
+          ModifiedInfo.[Modify Type],
+          ModifiedInfo.[Why Update]
+  FROM	[VatBillingSoftware].[dbo].[SystemTransaction] SystemTransaction
+      JOIN [VatBillingSoftware].[dbo].[SystemTransactionPurchaseSalesItem] PurchaseSalesItem
+          ON PurchaseSalesItem.[Transaction ID] = SystemTransaction.[Transaction ID]
+      JOIN [VatBillingSoftware].[dbo].[SystemTransactionPurchaseSalesAmount] PurchaseSalesAmount
+          ON PurchaseSalesAmount.[Transaction ID] = SystemTransaction.[Transaction ID]
+      JOIN [VatBillingSoftware].[dbo].[AccountProfileProduct] AccountProfileProduct
+          ON AccountProfileProduct.[ACCOUNT ID] = PurchaseSalesAmount.[Account ID]
+      JOIN [VatBillingSoftware].[dbo].[InventoryItem] InventoryItem
+          ON InventoryItem.[Inventory ID] = PurchaseSalesItem.[Inventory Item Code]
+      JOIN [VatBillingSoftware].[dbo].[SystemCalenderDate] CalanderDate
+          ON CalanderDate.[English Date] = SystemTransaction.[Bill Date]
+      LEFT JOIN [VatBillingSoftware].[dbo].[SystemModifiedInformation] ModifiedInfo
+          ON ModifiedInfo.[Primary Key ID] = SystemTransaction.[Transaction ID]
+      LEFT JOIN [VatBillingSoftware].[dbo].[InventoryUnitCreation] InventoryUnit
+          ON InventoryUnit.[Row ID] = PurchaseSalesItem.[Unit Id]
+  WHERE SystemTransaction.[Transaction Type] = ?
+      AND SystemTransaction.[Bill Date] BETWEEN ? AND ?
+  GROUP BY SystemTransaction.[Transaction ID],
+          SystemTransaction.[Bill Date],
+          SystemTransaction.[Transaction Date],
+          CalanderDate.[Year], CalanderDate.[Month], CalanderDate.[Day],
+          SystemTransaction.[Bill Receiveable Person],
+          AccountProfileProduct.[Vat Pan No],
+          InventoryUnit.Symbol,
+          PurchaseSalesAmount.[Grand Total],
+          PurchaseSalesAmount.[Round Off],
+          PurchaseSalesAmount.[Taxable Amount],
+          PurchaseSalesAmount.[Tax Amount],
+          SystemTransaction.[Reference No],
+          SystemTransaction.Status,
+          ModifiedInfo.[Modify Type],
+          ModifiedInfo.[Why Update]
+  ORDER BY SystemTransaction.[Bill Date];
+
+details:
+  PAN: 301003001
+  office_name: SHANKER PARBATI OIL STORES

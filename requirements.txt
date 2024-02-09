@@ -1,0 +1,11 @@
+nepali_datetime>=1.0.8.1,<1.2
+pyBSDate>=0.3.0,<0.4
+python-dotenv>=1.0.0,<1.1
+tomli>=2.0.1,<2.1
+pandas>=2.0.3,<2.1
+pyyaml>=6.0.1,<6.1
+SQLAlchemy>=2.0.21,<2.1
+pyodbc>=4.0.39,<4.1
+openpyxl>=3.1.2,<3.2
+requests>=2.31.0,<2.4
+pytest>=7.4.4,<7.5
