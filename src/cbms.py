@@ -16,8 +16,10 @@ LOGIN_ENDPOINT = '/api/auth/login'
 
 
 class CBMS(CustomSession):
+    """Custom session optimized to connect to the CBMS portal."""
+
     def __init__(self, base_url=BASE_URL):
-        """Returns a custom session optimized to connect CBMS portal."""
+        """Initializes the CBMS session with the given base URL."""
         super().__init__(base_url)
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -27,18 +29,18 @@ class CBMS(CustomSession):
 
 
 class TokenAuth(AuthBase):
-    """Implements a token authentication scheme to work with CBMS session."""
+    """Implements a token authentication scheme to work with the CBMS session."""
 
     _TOKEN = None
 
     def __init__(self):
-        """Fetches token from the CBMS."""
+        """Initializes the TokenAuth and fetches token from the CBMS if not already fetched."""
         if TokenAuth._TOKEN is None:
             logger.info("Fetching new token")
             TokenAuth.__fetch_token()
 
     def __call__(self, request):
-        """Attach an API token to a custom auth header."""
+        """Attaches an API token to a custom auth header."""
         request.headers['Authorization'] = TokenAuth._TOKEN
         return request
 
@@ -49,6 +51,7 @@ class TokenAuth(AuthBase):
 
     @staticmethod
     def __fetch_token():
+        """Fetches token from the CBMS and handles login."""
         client = CBMS()
         json_data = {
             'PAN': os.getenv('PAN'),

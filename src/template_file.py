@@ -8,7 +8,6 @@ from src.customsession import CustomSession
 from src.file_handlers import write_bytes_to_disk
 from src.loggerfactory import LoggerFactory
 
-
 logger = LoggerFactory.get_logger(__name__)
 
 
@@ -16,11 +15,29 @@ class TemplateFile:
     """To work with custom sessions for standard files. Downloader."""
 
     def __init__(self, session: CustomSession, token_auth: TokenAuth):
+        """
+        Initialize TemplateFile with the given session and token authentication.
+
+        Args:
+            session (CustomSession): The custom session to be used for downloading files.
+            token_auth (TokenAuth): The token authentication to be used for the session.
+        """
         self.session = session
         self.token_auth = token_auth
 
     def get(self, book: Book) -> BytesIO:
-        """Download the format file from CBMS and return in bytes."""
+        """
+        Download the format file from CBMS and return in bytes.
+
+        Args:
+            book (Book): The book object representing the file to be downloaded.
+
+        Returns:
+            BytesIO: The downloaded file in bytes.
+
+        Raises:
+            Exception: If there is an error validating the file against its MD5 hash.
+        """
         self.session.headers.update(
             {'Content-Disposition': 'attachment; filename=template.xlsx'})
         response = self.session.get(self.session.base_url(
@@ -49,8 +66,18 @@ class TemplateFile:
         return buffer
 
     def get_hash_value(self, book_name: Literal["purchase", "sales", "File 1L+"]) -> str:
-        """Returns hash value for the respective book or raise ValueError"""
+        """
+        Returns hash value for the respective book or raise ValueError
 
+        Args:
+            book_name (Literal["purchase", "sales", "File 1L+"]): The name of the book for which the hash value is required.
+
+        Returns:
+            str: The hash value for the specified book.
+
+        Raises:
+            ValueError: If the book name is not found in HASH_VALUE in configurations settings.
+        """
         try:
             return HASH_VALUE[book_name]
         except KeyError:
@@ -60,9 +87,13 @@ class TemplateFile:
     def __validate_bytes(self, content: bytes, hash: str):
         """
         Validates downloaded content in bytes with an md5 hash value
+
         Args:
-            content (bytes): file downloaded in :obj:`bytes` form
-            hash (str): hash value to compare
+            content (bytes): The file downloaded in :obj:`bytes` form.
+            hash (str): The hash value to compare.
+
+        Returns:
+            bool: True if the hash value matches, False otherwise.
         """
         m = hashlib.md5(content)
         return m.hexdigest() == hash

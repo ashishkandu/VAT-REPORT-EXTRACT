@@ -8,6 +8,16 @@ from src.template_file import TemplateFile
 
 
 class TransactionAbove1L(NamedTuple):
+    """
+    Represents a transaction above 1L with the following fields:
+    - pan_no: PAN number
+    - bill_receiveable_person: Name of the person or entity to receive the bill
+    - trade_name_type: Type of trade name
+    - transaction_type: Type of transaction
+    - taxable_amount: Taxable amount
+    - exempted_amount: Exempted amount
+    """
+
     pan_no: str
     bill_receiveable_person: str
     trade_name_type: str
@@ -17,10 +27,16 @@ class TransactionAbove1L(NamedTuple):
 
 
 class LakhBusters:
+    """
+    Class to manage transactions above 1L and generate reports.
+    """
 
     _lakh_busters: List[TransactionAbove1L] = []
 
     def __init__(self, work_dir: Path):
+        """
+        Initialize LakhBusters with the working directory.
+        """
 
         self.book = Books.ONE_LAKH_PLUS.value
         self.buffer = self.get_1L_plus_template_buffer()
@@ -29,9 +45,6 @@ class LakhBusters:
     def get_1L_plus_template_buffer(self):
         """
         Retrieves the template file for transaction above 1L as a BytesIO buffer.
-
-        Args:
-            self: The instance of the class containing the book information.
 
         Returns:
             A BytesIO object containing the template file's contents.
@@ -68,4 +81,7 @@ class LakhBusters:
 
     @classmethod
     def reset_busters(cls):
+        """
+        Reset the list of lakh busters.
+        """
         cls._lakh_busters = []

@@ -5,25 +5,38 @@ from typing import List, Literal
 from src.loggerfactory import LoggerFactory
 
 
+# Get the logger for the current module
 logger = LoggerFactory.get_logger(__name__)
 
 
 class ID(Enum):
+    """
+    Enumeration for book IDs.
+    """
     PURCHASE, SALES = range(1, 3)
 
 
 @dataclass
 class BookColumns:
+    """
+    Dataclass representing the columns of a book.
+    """
     filter: List[str]
 
 
 @dataclass
 class EmptyColumns:
+    """
+    Dataclass representing the empty columns of a book.
+    """
     indices: List[int]
 
 
 @dataclass
 class Book:
+    """
+    Dataclass representing a book.
+    """
     id: ID
     name: Literal['purchase', 'sales', 'File 1L+']
     sheet: Literal['Nepali PB', 'Nepali SB', 'Sheet1']
@@ -34,6 +47,9 @@ class Book:
 
 
 class Books(Enum):
+    """
+    Enumeration for different types of books.
+    """
     PURCHASE = Book(
         ID.PURCHASE.value,
         'purchase',

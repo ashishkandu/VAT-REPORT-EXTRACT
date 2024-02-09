@@ -2,7 +2,7 @@ import os
 import pytest
 from unittest.mock import patch
 
-from src.db_connection import db_config, get_sql_engine
+from src.db_connection import DB_CONFIGURATION_PATH, get_sql_engine
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def mock_config_data():
 
 
 def test_db_config_exists():
-    assert db_config.exists()
+    assert DB_CONFIGURATION_PATH.exists()
 
 
 @patch('tomli.load')

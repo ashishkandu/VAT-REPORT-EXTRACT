@@ -4,12 +4,27 @@ from pathlib import Path
 from src.loggerfactory import LoggerFactory
 
 
+# Get the logger instance
 logger = LoggerFactory.get_logger(__name__)
 
 
 def write_bytes_to_disk(buffer: BytesIO, filepath: Path):
-    """It writes bytes formatted data to provided filepath."""
+    """Write bytes-formatted data to the provided filepath.
+
+    Args:
+        buffer (BytesIO): The bytes-formatted data to be written.
+        filepath (Path): The file path to write the data to.
+
+    Returns:
+        None
+
+    """
+    # Log the action
     logger.info(f'Saving contents to {filepath.name}')
-    with open(filepath, 'wb') as filepath:
-        filepath.write(buffer.getvalue())
+
+    # Write the data to the file
+    with open(filepath, 'wb') as file:
+        file.write(buffer.getvalue())
+
+    # Log the completion
     logger.info('File write completed!')
