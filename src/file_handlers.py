@@ -18,15 +18,29 @@ def write_bytes_to_disk(buffer: BytesIO, filepath: Path):
     Returns:
         None
 
+    Raises:
+        FileNotFoundError: If the parent directories cannot be created.
+        PermissionError: If there is an error writing to the file.
+
     """
     # Log the action
-    logger.info(f'Saving contents to {filepath.name}')
+    logger.debug(f'Saving contents to {filepath.name}')
 
     # Write the data to the file
     parent_path = filepath.parent
-    parent_path.mkdir(parents=True, exist_ok=True)
-    with open(filepath, 'wb') as file:
-        file.write(buffer.getvalue())
+    if not parent_path.exists():
+        try:
+            parent_path.mkdir(parents=True)
+        except FileNotFoundError as e:
+            logger.error(f'Error creating parent directories: {e}')
+            raise
+
+    try:
+        with filepath.open('wb') as file:
+            file.write(buffer.read())
+    except PermissionError as e:
+        logger.error(f'Error writing to file: {e}')
+        raise
 
     # Log the completion
     logger.info('File write completed!')
