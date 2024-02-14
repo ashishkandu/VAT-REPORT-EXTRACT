@@ -12,8 +12,8 @@ class NepaliDateSelector:
     def is_valid_year(self, year):
         return year in self.allowed_years
 
-    def is_valid_month(self, month_index):
-        return 0 <= month_index < len(self.available_months)
+    def is_valid_month(self, month_index, available_months):
+        return 0 <= month_index < len(available_months)
 
     def select_year(self):
         while True:
@@ -43,7 +43,7 @@ class NepaliDateSelector:
                 print(f"{index+1}. {month}")
             month_str = input("\nSelect Month:")
             selected_month_index = int(month_str) - 1
-            if not self.is_valid_month(selected_month_index):
+            if not self.is_valid_month(selected_month_index, available_months):
                 print("Invalid month selection for this year")
             else:
                 selected_month = available_months[selected_month_index]
