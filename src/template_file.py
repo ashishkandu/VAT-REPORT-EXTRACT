@@ -5,6 +5,7 @@ from settings import DOWNLOAD, HASH_VALUE, TEMPLATE_SAVE_DIR
 from src.books import Book
 from src.cbms import TokenAuth
 from src.customsession import CustomSession
+from src.exceptions import BookNameNotFoundError, FileValidationError
 from src.file_handlers import write_bytes_to_disk
 from src.loggerfactory import LoggerFactory
 
@@ -46,8 +47,6 @@ class TemplateFile:
             f"{response.request.method} {response.url} [status:{response.status_code} request:{response.elapsed.total_seconds():.3f}s]")
         response.raise_for_status()
         cache_hash = self.get_hash_value(book.name)
-        if not self.__validate_bytes(response.content, cache_hash):
-            raise Exception('Error validating the file against its MD5 hash')
         buffer = BytesIO(response.content)
 
         if DOWNLOAD:
@@ -63,6 +62,9 @@ class TemplateFile:
             TEMPLATE_SAVE_DIR.mkdir(parents=True, exist_ok=True)
             filepath = TEMPLATE_SAVE_DIR / filename
             write_bytes_to_disk(buffer, filepath)
+        if not self.__validate_bytes(buffer.getvalue(), cache_hash):
+            raise FileValidationError(
+                f'Error validating the file against its MD5 hash. Expected: {cache_hash}, Got: {self.computed_hash}')
         return buffer
 
     def get_hash_value(self, book_name: Literal["purchase", "sales", "File 1L+"]) -> str:
@@ -81,7 +83,7 @@ class TemplateFile:
         try:
             return HASH_VALUE[book_name]
         except KeyError:
-            raise ValueError(
+            raise BookNameNotFoundError(
                 "Please check HASH_VALUE in configurations settings")
 
     def __validate_bytes(self, content: bytes, hash: str):
@@ -95,5 +97,5 @@ class TemplateFile:
         Returns:
             bool: True if the hash value matches, False otherwise.
         """
-        m = hashlib.md5(content)
-        return m.hexdigest() == hash
+        self.computed_hash = hashlib.md5(content).hexdigest()
+        return self.computed_hash == hash

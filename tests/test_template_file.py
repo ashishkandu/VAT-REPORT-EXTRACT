@@ -8,6 +8,7 @@ from settings import HASH_VALUE
 
 from src.books import Book
 from src.cbms import CBMS, TokenAuth
+from src.exceptions import BookNameNotFoundError, FileValidationError
 from src.template_file import TemplateFile
 
 
@@ -85,7 +86,7 @@ def test_get_validation_failure(template_file, book_mock, cbms_mock, mock_respon
     cbms_mock.get.return_value = mock_response
 
     with patch('src.template_file.HASH_VALUE', {'purchase': 'invalid_hash'}):
-        with pytest.raises(Exception) as e:
+        with pytest.raises(FileValidationError) as e:
             template_file.get(book_mock)
 
     assert 'Error validating the file against its MD5 hash' in str(e)
@@ -97,7 +98,7 @@ def test_get_hash_value_valid(template_file):
 
 
 def test_get_hash_value_invalid(template_file):
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(BookNameNotFoundError) as e:
         template_file.get_hash_value('invalid_book')
 
     assert 'Please check HASH_VALUE in configurations settings' in str(e)
