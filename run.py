@@ -1,14 +1,14 @@
-from typing import Callable
 from nepali_datetime import datetime as np_datetime
 from src.date_helpers import get_month_name_np
 from src.filingmonth import FilingMonth
 from src.menu import Menu, MenuOption, ReportMenu
+from src.nepalidateselector import NepaliDateSelector
 from src.report_generator import ReportGenerator
 
 
-def get_previous_month_report(**kwargs) -> None:
+def get_month_report(**kwargs) -> None:
     """
-    Retrieves the report for the previous month.
+    Retrieves the report for the specified month.
 
     Args:
     **kwargs: additional keyword arguments for month and year
@@ -34,8 +34,11 @@ def get_previous_month_report(**kwargs) -> None:
 
 def get_report_for_another_month() -> None:
     """Retrieves the report for another month."""
-    # TODO: Add implementation for getting report for another month
-    pass
+    selector = NepaliDateSelector()
+    year, month = selector.get_year_month()
+
+    # Call get_month_report with the year and month
+    get_month_report(year=year, month=month)
 
 
 def select_custom_date_range() -> None:
@@ -46,31 +49,6 @@ def select_custom_date_range() -> None:
     pass
 
 
-def main() -> None:  # function takes no arguments and returns nothing
-    """
-    Main function to handle user input and execute the selected option.
-    """
-    menu_options: dict[int, Callable[[], None]] = {  # dictionary with integer keys and function values
-        # value is a function that takes no arguments and returns nothing
-        1: get_previous_month_report,
-        # value is a function that takes no arguments and returns nothing
-        2: get_report_for_another_month,
-        # value is a function that takes no arguments and returns nothing
-        3: select_custom_date_range,
-    }
-    while True:
-        selected_option = input("\nEnter an option from above: ")
-        if selected_option.lower() in ('exit', 'break', 'no', 'n', '0'):
-            # raise SystemExit with message 'Terminated'
-            raise SystemExit('Terminated')
-        try:
-            selected_option = int(selected_option)
-            menu_options[selected_option]()  # call the selected function
-            break
-        except (KeyError, ValueError):
-            print("Please choose from above options!!")
-
-
 if __name__ == "__main__":
 
     now = np_datetime.now()
@@ -78,7 +56,7 @@ if __name__ == "__main__":
     options = [
         MenuOption(
             f"Get {previous_month} report",
-            get_previous_month_report,
+            get_month_report,
             kwargs={"year": now.year, "month": now.month - 1},
         ),
         MenuOption(
