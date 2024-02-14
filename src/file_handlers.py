@@ -37,7 +37,7 @@ def write_bytes_to_disk(buffer: BytesIO, filepath: Path):
 
     try:
         with filepath.open('wb') as file:
-            file.write(buffer.read())
+            file.write(buffer.getvalue())
     except PermissionError as e:
         logger.error(f'Error writing to file: {e}')
         raise
