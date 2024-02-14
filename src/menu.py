@@ -83,8 +83,8 @@ class Menu:
         """
         A method that runs the program, displays a welcome message, prompts the user for input, executes the selected option, and allows the user to exit the program.
         """
-        self.display_welcome_message()
         while True:
+            self.display_welcome_message()
             selected_option = self.prompt_user()
             self.options[selected_option].execute()
             if input("Do you want to exit? (y/n): ").lower() == "y":
