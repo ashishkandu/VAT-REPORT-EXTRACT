@@ -13,7 +13,7 @@ def test_id_enum_values():
 
 def test_book_columns_creation():
     columns = BookColumns(['col1', 'col2'])
-    assert columns.filter == ['col1', 'col2']
+    assert columns.column_names == ['col1', 'col2']
 
 # Test cases for EmptyColumns dataclass
 
@@ -26,13 +26,13 @@ def test_empty_columns_creation():
 
 
 def test_book_creation():
-    book = Book(ID.PURCHASE, 'purchase', 'Nepali PB', 'P',
+    book = Book(ID.PURCHASE, 'purchase', 'Nepali PB',
                 BookColumns([]), 'endpoint', EmptyColumns([]))
     assert book.id == ID.PURCHASE
     assert book.name == 'purchase'
     assert book.sheet == 'Nepali PB'
     assert book.symbol == 'P'
-    assert book.columns.filter == []
+    assert book.columns.column_names == []
     assert book.endpoint == 'endpoint'
     assert book.emptycols.indices == []
 
@@ -62,12 +62,12 @@ def test_books(book_type, expected_id, expected_name):
 
 def test_purchase_columns():
     purchase_columns = Books.PURCHASE.value.columns
-    assert len(purchase_columns.filter) == 7
+    assert len(purchase_columns.column_names) == 7
 
 
 def test_sales_columns():
     sales_columns = Books.SALES.value.columns
-    assert len(sales_columns.filter) == 7
+    assert len(sales_columns.column_names) == 7
 
 
 def test_empty_columns():

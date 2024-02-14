@@ -113,7 +113,7 @@ class Report:
         """
 
         # Filter the DataFrame to keep only the columns specified in the book filter
-        df = self.raw_transactions.loc[:, self.book.columns.filter]
+        df = self.raw_transactions.loc[:, self.book.columns.column_names]
 
         # Reshape for fitting:
         # Insert empty columns at specified indices to match the template structure

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Literal
+from typing import List, Set, Literal
 
 from src.loggerfactory import LoggerFactory
 
@@ -13,7 +13,16 @@ class ID(Enum):
     """
     Enumeration for book IDs.
     """
-    PURCHASE, SALES = range(1, 3)
+    PURCHASE = 1  # Represents the ID for the 'PURCHASE' book.
+
+    SALES = 2  # Represents the ID for the 'SALES' book.
+
+    @classmethod
+    def list(cls):
+        """
+        Returns a list of values obtained by mapping the 'value' attribute of each instance of the class.
+        """
+        return list(map(lambda x: x.value, cls))
 
 
 @dataclass
@@ -21,7 +30,7 @@ class BookColumns:
     """
     Dataclass representing the columns of a book.
     """
-    filter: List[str]
+    column_names: List[str]
 
 
 @dataclass
@@ -29,7 +38,7 @@ class EmptyColumns:
     """
     Dataclass representing the empty columns of a book.
     """
-    indices: List[int]
+    indices: Set[int]
 
 
 @dataclass
@@ -40,10 +49,24 @@ class Book:
     id: ID
     name: Literal['purchase', 'sales', 'File 1L+']
     sheet: Literal['Nepali PB', 'Nepali SB', 'Sheet1']
-    symbol: Literal['P', 'S', '1L']
+    # symbol: Literal['P', 'S', '1L']
     columns: BookColumns
     endpoint: str
     emptycols: EmptyColumns
+
+    @property
+    def symbol(self) -> Literal['P', 'S', '1L']:
+        """
+        Property representing the symbol of the book.
+        """
+        if self.name == 'purchase':
+            return 'P'
+        elif self.name == 'sales':
+            return 'S'
+        elif self.name == 'File 1L+':
+            return '1L'
+        else:
+            raise ValueError("Invalid book name")
 
 
 class Books(Enum):
@@ -54,7 +77,6 @@ class Books(Enum):
         ID.PURCHASE.value,
         'purchase',
         'Nepali PB',
-        'P',
         BookColumns([
             'Nepali Date',
             'Reference No',
@@ -74,7 +96,6 @@ class Books(Enum):
         ID.SALES.value,
         'sales',
         'Nepali SB',
-        'S',
         BookColumns([
             'Nepali Date',
             'Transaction ID',
@@ -94,7 +115,6 @@ class Books(Enum):
         0,
         'File 1L+',
         'Sheet1',
-        '1L',
         BookColumns([]),
         'Sample%20Files/Transaction%20Above%20One%20Lakh%20Sample%20Document.xls',
         EmptyColumns([]),

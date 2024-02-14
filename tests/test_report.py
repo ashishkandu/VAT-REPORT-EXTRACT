@@ -104,7 +104,6 @@ def book_instance():
         id=1,
         name='sales',
         sheet='Nepali SB',
-        symbol='S',
         columns=BookColumns([
             "Transaction ID",
             "Bill Receiveable Person",
