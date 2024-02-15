@@ -15,8 +15,8 @@ DB_CONFIGURATION_PATH = PACKAGE_DIR.joinpath('src', 'config', 'db_config.toml')
 
 # Define the md5 hash values for different categories
 HASH_VALUE = {
-    "purchase": "6d9ca675290786724f2c626f50309037",
-    "sales": "771f7a36bc5518303751f41afb361f48",
+    "purchase": "b71b8f9477168af708e7038f565f32c7",
+    "sales": "4b9e0405c71ff6631ab14eaf6fb19d9f",
     "File 1L+": "d73ff4586f22c333a5ea17e0e4c3de95",
 }
 
