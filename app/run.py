@@ -46,7 +46,7 @@ def select_custom_date_range() -> None:
     This function allows the user to select a custom date range for analysis.
     """
     # TODO: Implement the logic for selecting a custom date range
-    pass
+    raise NotImplementedError
 
 
 if __name__ == "__main__":

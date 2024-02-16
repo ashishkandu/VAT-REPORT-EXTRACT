@@ -1,3 +1,4 @@
+from pathlib import Path
 from unittest.mock import Mock, patch
 from openpyxl import load_workbook
 import pandas as pd
@@ -78,7 +79,8 @@ def mock_get_data(monkeymodule):
 
 @pytest.fixture
 def saved_mock_get_template_buffer():
-    with open('tests/io_files/sales.xlsx', "rb") as fh:
+    test_file = Path(__file__).parent / "io_files" / "sales.xlsx"
+    with open(test_file, "rb") as fh:
         template_buffer = BytesIO(fh.read())
     with patch('src.report.Report.get_template_buffer', return_value=template_buffer):
         yield template_buffer
