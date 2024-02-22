@@ -37,7 +37,7 @@ def test_env_var_loading(mock_getenv):
 
     get_sql_engine()
 
-    mock_getenv.assert_called_once_with('DBpassword')
+    mock_getenv.assert_called_once_with('SA_PASSWORD')
 
 
 @patch('os.getenv', return_value=None)

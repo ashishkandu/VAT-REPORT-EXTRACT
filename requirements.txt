@@ -7,8 +7,10 @@ pyyaml
 SQLAlchemy
 pyodbc
 openpyxl
+xlrd
 requests
 pytest
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
+httpretty
