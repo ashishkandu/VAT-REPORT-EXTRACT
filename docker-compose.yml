@@ -4,6 +4,9 @@ services:
   app:
     build:
       context: .
+      args:
+        UID: ${HOST_UID}
+        GID: ${HOST_GID}
     volumes:
       - ./app:/app
       - shared-volume:/backup

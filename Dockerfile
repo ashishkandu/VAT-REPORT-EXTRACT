@@ -6,6 +6,9 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+ARG UID
+ARG GID
+
 # Install additional dependencies
 RUN apt-get update && apt-get install -y \
     curl \
@@ -29,8 +32,11 @@ RUN python -m venv /py && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     rm -rf /tmp
 
+RUN addgroup --gid $GID ashish && \
+    adduser --uid $UID --gid $GID --disabled-password --gecos "" ashish
 
-# COPY ./token.json /
+USER ashish
+
 # Copy project
 COPY ./app .
 
