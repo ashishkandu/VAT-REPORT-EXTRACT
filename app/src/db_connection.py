@@ -1,7 +1,6 @@
 from sqlalchemy import URL, create_engine
 import tomli
 import os
-from dotenv import load_dotenv
 from settings import DB_CONFIGURATION_PATH
 
 from src.loggerfactory import LoggerFactory
@@ -25,8 +24,8 @@ def get_sql_engine():
     SERVER_NAME = config_data['server']['name']
     DATABASE_NAME = config_data['database']['name']
     USERNAME = config_data['user']['name']
-    load_dotenv()  # Load the environment containing db password
-    password = os.getenv('DBpassword')
+
+    password = os.getenv('SA_PASSWORD')
     if not password:
         logger.error('Password not found in the env!')
         raise SystemExit()
