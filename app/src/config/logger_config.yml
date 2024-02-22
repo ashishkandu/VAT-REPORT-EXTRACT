@@ -4,8 +4,7 @@ disable_existing_loggers: false
 
 formatters:
   basic:
-    format: '[%(levelname)s]: %(asctime)s - %(message)s'
-    datefmt: '%H:%M:%S'
+    format: '[%(levelname)s]: %(asctime)s - (%(name)s) %(message)s'
   file:
     format: '[%(levelname)s]: %(asctime)s - (%(name)s) %(message)s'
 
