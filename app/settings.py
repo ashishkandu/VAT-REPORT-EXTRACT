@@ -1,17 +1,26 @@
 from pathlib import Path
 
 # Define the base directory using the absolute path of the current file
-PACKAGE_DIR = Path(__file__).parent.absolute()
+PACKAGE_PATH = Path(__file__).parent.absolute()
+PACKAGE_DIR = PACKAGE_PATH.parent
+
+# Google API credentials
+GOOGLE_API_CREDENTIALS = PACKAGE_DIR.joinpath('client_secrets.json')
+TOKEN_PATH = PACKAGE_PATH / 'token.json'
+
+# Set the path to your client secrets JSON file
+DRIVE_CACHE_PATH = PACKAGE_PATH / 'drive_cache.json'
 
 # Define the default logging configuration file path
-DEFAULT_LOG_PATH = PACKAGE_DIR.joinpath('src', 'config', 'logger_config.yml')
+DEFAULT_LOG_PATH = PACKAGE_PATH.joinpath('src', 'config', 'logger_config.yml')
 
 # Define the path to the runtime configuration file
-RUNTIME_CONFIG_PATH = PACKAGE_DIR.joinpath(
+RUNTIME_CONFIG_PATH = PACKAGE_PATH.joinpath(
     'src', 'config', 'runtime_config.yml')
 
 # Define the location of the database config file
-DB_CONFIGURATION_PATH = PACKAGE_DIR.joinpath('src', 'config', 'db_config.toml')
+DB_CONFIGURATION_PATH = PACKAGE_PATH.joinpath(
+    'src', 'config', 'db_config.toml')
 
 # Define the md5 hash values for different categories
 HASH_VALUE = {
@@ -33,5 +42,5 @@ DOWNLOAD_REPORT_ID = {
 DOWNLOAD = False
 
 # Define the directories for template files and sheets
-TEMPLATE_SAVE_DIR = PACKAGE_DIR / 'templates'
-SHEETS_DIR = PACKAGE_DIR / 'sheets'
+TEMPLATE_SAVE_DIR = PACKAGE_PATH / 'templates'
+SHEETS_DIR = PACKAGE_PATH / 'sheets'
