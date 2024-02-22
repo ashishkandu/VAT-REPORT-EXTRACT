@@ -122,11 +122,11 @@ class Report:
 
         # Handling missing PANs:
         # Temporarily convert empty PANs to numeric 000 for compatibility
-        df['Vat Pan No'].mask(df['Vat Pan No'] == '', 000, inplace=True)
+        df['Vat Pan No'] = df['Vat Pan No'].mask(df['Vat Pan No'] == '', 000)
         df['Vat Pan No'] = df['Vat Pan No'].astype(int)
 
         # Restore empty PANs as empty strings after numeric processing
-        df['Vat Pan No'].mask(df['Vat Pan No'] == 000, '', inplace=True)
+        df['Vat Pan No'] = df['Vat Pan No'].mask(df['Vat Pan No'] == 000, '')
 
         return df
 
