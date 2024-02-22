@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+      - shared-volume:/backup
+    depends_on:
+      - mssql
+    env_file:
+      - .env
+    command: "python restore_database.py"
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    volumes:
+    # add /data at the end if getting permission error
+      - db_data:/var/opt/mssql # Mount the db_data volume
+      - shared-volume:/backup
+    env_file:
+      - .env
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"  # Expose the MSSQL port
+
+volumes:
+  db_data:
+  shared-volume:
