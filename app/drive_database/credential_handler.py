@@ -21,6 +21,19 @@ SCOPES = [
 logger = logging.getLogger(__name__)
 
 
+def save_token(credentials: Credentials):
+    """
+    Saves the obtained credentials to the token file.
+    """
+    try:
+        with TOKEN_PATH.open('w') as token_file:
+            token_file.write(credentials.to_json())
+            token_file.flush()
+            logger.debug('Confirmed successful write operation')
+    except Exception as e:
+        logger.error(f'Failed to save token: {e}')
+
+
 def request_credentials():
     """
     Requests and returns Google API credentials for accessing Google services.
@@ -35,15 +48,7 @@ def request_credentials():
 
     # Check if token file exists
     if TOKEN_PATH.exists():
-        logger.debug('Retrieving credentials from cached token file')
-        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-        if creds and creds.expired and creds.refresh_token:
-            logger.info('Token expired, refreshing...')
-            try:
-                creds.refresh(Request())
-            except RefreshError as e:
-                logger.error(f'Failed to refresh token: {e}')
-        return creds
+        return get_cached_credentials()
 
     # Create the OAuth 2.0 flow
     flow = InstalledAppFlow.from_client_secrets_file(
@@ -52,26 +57,22 @@ def request_credentials():
     logger.debug('Running local server for authentication')
     credentials = flow.run_local_server(port=0)
 
-    with open(TOKEN_PATH, 'w') as token:
-        token.write(credentials.to_json())
-        token.flush()
-        logger.debug('Confirmed successful write operation')
+    save_token(credentials=credentials)
 
     return Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
 
 
-def get_credentials():
-    """Get credentials from cached token file or raise FileNotFoundError if not found."""
-    if TOKEN_PATH.exists():
-        logger.debug('Retriving credentials from cached token file')
-        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-        # Check if credentials are expired and can be refreshed
-        if creds and creds.expired and creds.refresh_token:
-            logger.info('Token expired, refreshing...')
-            try:
-                creds.refresh(Request())
-            except RefreshError as e:
-                logger.error(f'Error refreshing credentials: {e}')
-        return creds
-    else:
-        raise FileNotFoundError(f'Token file not found: {TOKEN_PATH}')
+def get_cached_credentials():
+    """Get credentials from cached token file."""
+
+    logger.debug('Retrieving credentials from cached token file')
+    creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+    # Check if credentials are expired and can be refreshed
+    if creds and creds.expired and creds.refresh_token:
+        logger.info('Token expired, refreshing...')
+        try:
+            creds.refresh(Request())
+            save_token(credentials=creds)
+        except RefreshError as e:
+            logger.error(f'Error refreshing credentials: {e}')
+    return creds

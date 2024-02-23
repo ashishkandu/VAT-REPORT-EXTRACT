@@ -1,8 +1,8 @@
 import json
 from nepali_datetime import datetime as np_datetime
-from drive_database.credential_handler import get_credentials
+from drive_database.credential_handler import get_cached_credentials
 from drive_database.database_operations import restore
-from settings import DRIVE_CACHE_PATH
+from settings import DRIVE_CACHE_PATH, TOKEN_PATH
 from drive_database.drive import GoogleDriveFile, download_drive_file, retrive_latest_file_by_pattern
 from src.date_helpers import get_month_name_np
 from src.filingmonth import FilingMonth
@@ -78,7 +78,13 @@ def select_custom_date_range() -> None:
 if __name__ == "__main__":
 
     file_pattern = r"VatBillingSoftware_\d+_\d+\.bak"
-    creds = get_credentials()
+
+    # Check if token file exists
+    if TOKEN_PATH.exists():
+        creds = get_cached_credentials()
+    else:
+        raise FileNotFoundError(f'Token file not found: {TOKEN_PATH}')
+
     latest_file = retrive_latest_file_by_pattern(creds, file_pattern)
 
     if latest_file is not None:
