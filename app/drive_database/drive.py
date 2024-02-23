@@ -122,7 +122,7 @@ def download_drive_file(credentials: Credentials, drive_file: GoogleDriveFile):
         logger.info(f"Downloaded {int(status.progress() * 100)}%")
 
     file_path.write_bytes(file.getvalue())
-    logger.info("File write complete!", file_path)
+    logger.info(f"File write complete {file_path}")
 
     cache_it(drive_file)
 
