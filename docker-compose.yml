@@ -14,7 +14,7 @@ services:
       - mssql
     env_file:
       - .env
-    command: "python restore_database.py"
+    command: "python run.py"
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
