@@ -27,13 +27,20 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
 # Copy requirements and install dependencies
 COPY ./requirements.txt /tmp/requirements.txt
 
+
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     rm -rf /tmp
 
+# Create the /backup directory
+RUN mkdir /backup
+
 RUN addgroup --gid $GID ashish && \
     adduser --uid $UID --gid $GID --disabled-password --gecos "" ashish
+
+RUN chown -R ashish:ashish /backup
+RUN chmod 755 /backup
 
 USER ashish
 
