@@ -64,8 +64,9 @@ class ReportGenerator:
         :return: None
         """
         report.save()
-        report.print_cancelled_transactions()
+        # report.print_cancelled_transactions()
         report.print_transactions_with_roundoff()
+        report.print_transactions_summary()
 
     def get_report(self, book: Book) -> Report:
         """

@@ -298,7 +298,8 @@ class Report:
         Prints a formatted list of cancelled transactions to the console.
         """
         if self.cancelled_transactions:
-            print(f"\nCancelled Transactions:")  # Print a heading for the list
+            # Print a heading for the list
+            print(f"\nCancelled {self.book.name} transactions:")
             for transaction in self.cancelled_transactions:
                 print(f"- {transaction}")
 
@@ -307,14 +308,32 @@ class Report:
         Compares 'Grand Total' and 'Total w Round' columns in a DataFrame and
         prints only transactions where there is difference.
         """
-        df = self._raw_transactions
+        df = self.raw_transactions
         transactions_w_roundoff = df.loc[df['Grand Total']
                                          != df['Total w Round']]
         if not transactions_w_roundoff.empty:
             columns = ['Transaction ID', 'Grand Total',
                        'Total w Round', 'Round Off']
             transactions_w_roundoff = transactions_w_roundoff.loc[:, columns]
-            transactions_w_roundoff.loc['Column_Total'] = transactions_w_roundoff.sum(
-                numeric_only=True, axis=0)
-            print("\n[!] Transactions with round off difference:\n")
+            # transactions_w_roundoff.loc['Column_Total'] = transactions_w_roundoff.sum(
+            #     numeric_only=True, axis=0)
+            print(
+                f"\n[!] {self.book.name.capitalize()} transactions with round off difference:\n")
             print(transactions_w_roundoff.to_string(index=False))
+
+    def print_transactions_summary(self):
+        """
+        Prints a summary of the transactions in the report.
+        """
+        df = self.transactions
+        grand_total_sum = df['Grand Total'].sum()
+        taxable_amount_sum = df['Taxable Amount'].sum()
+        tax_amount_sum = df['Tax Amount'].sum()
+        total_transactions = len(df)
+
+        print(f"\n[+] {self.book.name.capitalize()} transactions Summary:\n")
+        self.print_cancelled_transactions()
+        print(f"Grand Total Sum: {grand_total_sum}")
+        print(f"Taxable Amount Sum: {taxable_amount_sum}")
+        print(f"Tax Amount Sum: {tax_amount_sum}")
+        print(f"Total Transactions: {total_transactions}")
