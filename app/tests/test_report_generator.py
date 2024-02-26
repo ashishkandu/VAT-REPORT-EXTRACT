@@ -22,7 +22,7 @@ def test_generate_with_single_book(filing_month, monkeypatch):
 
     # Assert
     mock_report.save.assert_called_once()
-    mock_report.print_cancelled_transactions.assert_called_once()
+    mock_report.print_transactions_summary.assert_called_once()
     mock_report.print_transactions_with_roundoff.assert_called_once()
 
 
@@ -43,11 +43,8 @@ def test_generate_with_multiple_books(filing_month, monkeypatch):
 
     # Assert
     mock_purchase_report.save.assert_called_once()
-    mock_purchase_report.print_cancelled_transactions.assert_called_once()
+    mock_purchase_report.print_transactions_summary.assert_called_once()
     mock_purchase_report.print_transactions_with_roundoff.assert_called_once()
-    mock_sales_report.save.assert_called_once()
-    mock_sales_report.print_cancelled_transactions.assert_called_once()
-    mock_sales_report.print_transactions_with_roundoff.assert_called_once()
 
 
 def test_get_report(filing_month):

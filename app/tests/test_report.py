@@ -69,7 +69,7 @@ def monkeymodule():
 @pytest.fixture(scope="function")
 def mock_sql_engine(monkeymodule):
     mock_sql_engine = mock_engine
-    monkeymodule.setattr('src.report.get_sql_engine', mock_sql_engine)
+    monkeymodule.setattr('src.report.SQLEngine.get', mock_sql_engine)
 
 
 @pytest.fixture(scope="function")
