@@ -2,7 +2,7 @@ import os
 import pytest
 from unittest.mock import patch
 
-from src.db_connection import DB_CONFIGURATION_PATH, SQLEngine
+from src.db_connection import SQLEngine
 
 
 @pytest.fixture
@@ -15,39 +15,6 @@ def mock_config_data():
     }
     return mock_config_data
 
-
-# def test_db_config_exists():
-#     assert DB_CONFIGURATION_PATH.exists()
-
-
-# @patch('os.getenv')
-# @patch('tomli.load')
-# def test_connection_string_creation(mock_toml_load, mock_getenv, mock_config_data):
-
-#     mock_toml_load.return_value = mock_config_data
-#     mock_getenv.return_value = 'test_password'
-
-#     connection_string = SQLEngine.get()
-
-#     expected_string = f"DRIVER={{{mock_config_data['driver']['name']}}};SERVER={mock_config_data['server']['name']};DATABASE={mock_config_data['database']['name']};UID={mock_config_data['user']['name']};PWD={mock_getenv.return_value}"
-#     assert connection_string.url.query['odbc_connect'] == expected_string
-
-
-# @patch('tomli.load')
-# def test_config_loading(mock_toml_load, mock_config_data):
-
-#     mock_toml_load.return_value = mock_config_data
-
-#     with patch.dict(os.environ, {"SA_PASSWORD": "asdf"}):
-#         SQLEngine.get()  # Call the function to trigger loading
-
-#     mock_toml_load.assert_called_once()
-
-# @patch('src.db_connection.create_engine')
-# def test_engine_creation(mock_create_engine):
-#     SQLEngine.get()
-
-#     mock_create_engine.assert_called_once()
 
 class TestSQLEngine:
     
@@ -148,4 +115,18 @@ class TestSQLEngine:
         # Assert that the SQL engine was returned
         assert sql_engine is not None
         
-        
+    
+    def test_connection_string_creation(self, mocker, mock_config_data):
+
+        # Mock the tomli.load function to return a mock config data
+        mock_tomli_load = mocker.patch('tomli.load')
+        mock_tomli_load.return_value = mock_config_data
+
+        # Mock the os.getenv function to return a mock password
+        mock_getenv = mocker.patch('os.getenv')
+        mock_getenv.return_value = 'mock_password'
+
+        connection_string = SQLEngine.get()
+
+        expected_string = f"DRIVER={{{mock_config_data['driver']['name']}}};SERVER={mock_config_data['server']['name']};DATABASE={mock_config_data['database']['name']};UID={mock_config_data['user']['name']};PWD={mock_getenv.return_value}"
+        assert connection_string.url.query['odbc_connect'] == expected_string
