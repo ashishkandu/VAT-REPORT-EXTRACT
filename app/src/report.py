@@ -7,7 +7,7 @@ from src.books import Book
 from src.cbms import CBMS, TokenAuth
 
 from src.configurations import get_data
-from src.db_connection import get_sql_engine
+from src.db_connection import SQLEngine
 from src.file_handlers import write_bytes_to_disk
 from src.filingmonth import FilingMonth
 from src.loggerfactory import LoggerFactory
@@ -81,7 +81,7 @@ class Report:
         sql_query = get_data('sql')
 
         # Get a SQLAlchemy engine instance for database interaction
-        engine = get_sql_engine()
+        engine = SQLEngine.get()
 
         logger.info("Querying database...")
 
@@ -299,9 +299,10 @@ class Report:
         """
         if self.cancelled_transactions:
             # Print a heading for the list
-            print(f"\nCancelled {self.book.name} transactions:")
+            print(f"Cancelled {self.book.name} transactions:")
             for transaction in self.cancelled_transactions:
                 print(f"- {transaction}")
+            print('\n')
 
     def print_transactions_with_roundoff(self):
         """
@@ -326,9 +327,9 @@ class Report:
         Prints a summary of the transactions in the report.
         """
         df = self.transactions
-        grand_total_sum = df['Grand Total'].sum()
-        taxable_amount_sum = df['Taxable Amount'].sum()
-        tax_amount_sum = df['Tax Amount'].sum()
+        grand_total_sum = round(df['Grand Total'].sum(), 2)
+        taxable_amount_sum = round(df['Taxable Amount'].sum(), 2)
+        tax_amount_sum = round(df['Tax Amount'].sum(), 2)
         total_transactions = len(df)
 
         print(f"\n[+] {self.book.name.capitalize()} transactions Summary:\n")
@@ -336,4 +337,4 @@ class Report:
         print(f"Grand Total Sum: {grand_total_sum}")
         print(f"Taxable Amount Sum: {taxable_amount_sum}")
         print(f"Tax Amount Sum: {tax_amount_sum}")
-        print(f"Total Transactions: {total_transactions}")
+        print(f"Total Transactions: {total_transactions}\n")
