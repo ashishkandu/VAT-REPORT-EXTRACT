@@ -48,3 +48,5 @@ USER ashish
 COPY ./app .
 
 ENV PATH="/py/bin:$PATH"
+
+ENV TZ=Asia/Kathmandu
