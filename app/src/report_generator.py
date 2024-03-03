@@ -27,6 +27,7 @@ class ReportGenerator:
         """
         if self._lakh_busters is None:
             self._lakh_busters = LakhBusters(self.work_dir)
+            self._lakh_busters.reset_busters()
         return self._lakh_busters
 
     def generate(self, book: Union[Book, None]) -> None:
