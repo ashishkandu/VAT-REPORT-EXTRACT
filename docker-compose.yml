@@ -14,7 +14,7 @@ services:
       - mssql
     env_file:
       - .env
-    command: "python run.py"
+    command: ["/usr/local/bin/wait-for-it.sh", "mssql:1433", "--", "python", "run.py"]
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -26,6 +26,7 @@ services:
       - .env
     environment:
       - ACCEPT_EULA=Y
+      - TZ=Asia/Kathmandu
     ports:
       - "1433:1433"  # Expose the MSSQL port
 
