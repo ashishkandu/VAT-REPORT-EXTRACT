@@ -4,6 +4,7 @@ disable_existing_loggers: false
 
 formatters:
   basic:
+    (): coloredlogs.ColoredFormatter
     format: '[%(levelname)s]: %(asctime)s - (%(name)s) %(message)s'
   file:
     format: '[%(levelname)s]: %(asctime)s - (%(name)s) %(message)s'
