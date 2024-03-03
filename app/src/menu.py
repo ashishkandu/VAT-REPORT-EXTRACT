@@ -87,7 +87,7 @@ class Menu:
             self.display_welcome_message()
             selected_option = self.prompt_user()
             self.options[selected_option].execute()
-            if input("Do you want to exit? (y/n): ").lower() == "y":
+            if input("Do you want to exit? [Y/n] ").lower() != "n":
                 break
 
 

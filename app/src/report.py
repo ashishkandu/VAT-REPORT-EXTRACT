@@ -302,7 +302,7 @@ class Report:
             print(f"Cancelled {self.book.name} transactions:")
             for transaction in self.cancelled_transactions:
                 print(f"- {transaction}")
-            print('\n')
+            print()
 
     def print_transactions_with_roundoff(self):
         """
