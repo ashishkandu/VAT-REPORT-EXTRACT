@@ -4,7 +4,7 @@ from drive_database.credential_handler import get_cached_credentials
 from drive_database.database_operations import restore
 from settings import DRIVE_CACHE_PATH, TOKEN_PATH
 from drive_database.drive import GoogleDriveFile, download_drive_file, retrive_latest_file_by_pattern
-from src.date_helpers import get_month_name_np
+from src.date_helpers import get_month_name_np, get_previous_month_and_year
 from src.filingmonth import FilingMonth
 from src.menu import Menu, MenuOption, ReportMenu
 from src.nepalidateselector import NepaliDateSelector
@@ -91,12 +91,15 @@ if __name__ == "__main__":
         perform_restore(latest_file, creds)
 
     now = np_datetime.now()
-    previous_month = get_month_name_np(now.month - 1)
+    current_month = now.month
+    current_year = now.year
+    previous_month, previous_year = get_previous_month_and_year(current_month, current_year)
+    previous_month_name = get_month_name_np(previous_month)
     options = [
         MenuOption(
-            f"Get {previous_month} report",
+            f"Get {previous_month_name} report",
             get_month_report,
-            kwargs={"year": now.year, "month": now.month - 1},
+            kwargs={"year": previous_year, "month": previous_month},
         ),
         MenuOption(
             "Get report for another month",
