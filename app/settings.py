@@ -24,8 +24,8 @@ DB_CONFIGURATION_PATH = PACKAGE_PATH.joinpath(
 
 # Define the md5 hash values for different categories
 HASH_VALUE = {
-    "purchase": "b71b8f9477168af708e7038f565f32c7",
-    "sales": "4b9e0405c71ff6631ab14eaf6fb19d9f",
+    "purchase": "049d24b495a61c448933088c553cbe95",
+    "sales": "52ec175d67122cf0d5ed3d60eeb8e77a",
     "File 1L+": "d73ff4586f22c333a5ea17e0e4c3de95",
 }
 
