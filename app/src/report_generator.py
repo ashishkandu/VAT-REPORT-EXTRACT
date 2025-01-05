@@ -1,5 +1,7 @@
 from typing import Optional, Union
+
 from settings import SHEETS_DIR
+
 from src.books import Book, Books
 from src.filingmonth import FilingMonth
 from src.one_lakh_plus_transactions import LakhBusters
@@ -15,7 +17,7 @@ class ReportGenerator:
     def __init__(self, filingMonth: FilingMonth):
         self.filingMonth = filingMonth
         self.work_dir = SHEETS_DIR.joinpath(
-            self.filingMonth.get_fiscal_year().replace('/', '-'),
+            self.filingMonth.get_fiscal_year().replace("/", "-"),
             self.filingMonth.nepali_month_name(),
         )
         self._lakh_busters: Optional[LakhBusters] = None
@@ -41,9 +43,9 @@ class ReportGenerator:
             None
         """
         if book is None:
-            books = (Books.PURCHASE.value, Books.SALES.value)
+            books = (Books.SALES.value, Books.PURCHASE.value)
         else:
-            books = (book, )
+            books = (book,)
         for selected_book in books:
             report = self.get_report(selected_book)
 
