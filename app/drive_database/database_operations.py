@@ -45,53 +45,57 @@ def restore(
     logger.info("Attempting to establish connection...")
     # Create connection
     try:
-        conn = pyodbc.connect(connection_string)
+        with pyodbc.connect(connection_string, timeout=10) as conn:
+            logger.info("Connection established successfully!")
+            conn.autocommit = True
+
+            # Open cursor
+            cursor = conn.cursor()
+
+            logger.debug(f"Executing RESTORE FILELISTONLY for {filepath}...")
+
+            # Retrieve file list from backup
+            cursor.execute(f"""
+            RESTORE FILELISTONLY FROM DISK = N'{filepath}'
+            """)
+
+            # Process file list
+            files = {}
+            for row in cursor.fetchall():
+                # Process file list from backup
+                # Each row contains the following information:
+                # row[2]: symbol ['D', 'L']
+                # row[0]: logical name ['VatBillingSoftware', 'VatBillingSoftware_log']
+                # row[1]: physical name
+                # - ['F:\\Billing Software\\Database\\VatBillingSoftware.mdf',
+                #    'F:\\Billing Software\\Database\\VatBillingSoftware_log.ldf']
+
+                files[row[2]] = {
+                    'logical_name': row[0],
+                    'physical_name': row[1].split('\\')[-1]
+                }
+
+            logger.debug(
+                f"Executing RESTORE DATABASE for {DATABASE_NAME} from {filepath}...")
+
+            # Restore database from backup
+            cursor.execute(f"""
+                RESTORE DATABASE {DATABASE_NAME} FROM DISK=N'{filepath}' WITH REPLACE,
+                MOVE '{files['D']['logical_name']}' TO '{mssql_data.joinpath(files['D']['physical_name'])}',
+                MOVE '{files['L']['logical_name']}' TO '{mssql_data.joinpath(files['L']['physical_name'])}'
+                """)
+
+            while cursor.nextset():
+                logger.info("Restoring database...")
+
+            conn.commit()
     except pyodbc.Error as e:
         logger.error(f"Failed to connect to database: {e}")
         return
-
-    logger.info("Connection established successfully!")
-
-    conn.autocommit = True
-
-    # Open cursor
-    cursor = conn.cursor()
-
-    logger.debug(f"Executing RESTORE FILELISTONLY for {filepath}...")
-
-    # Retrieve file list from backup
-    cursor.execute(f"""
-    RESTORE FILELISTONLY FROM DISK = N'{filepath}'
-    """)
-
-    # Process file list
-    files = {}
-    for row in cursor.fetchall():
-        # Process file list from backup
-        # Each row contains the following information:
-        # row[2]: symbol ['D', 'L']
-        # row[0]: logical name ['VatBillingSoftware', 'VatBillingSoftware_log']
-        # row[1]: physical name
-        # - ['F:\\Billing Software\\Database\\VatBillingSoftware.mdf',
-        #    'F:\\Billing Software\\Database\\VatBillingSoftware_log.ldf']
-
-        files[row[2]] = {
-            'logical_name': row[0],
-            'physical_name': row[1].split('\\')[-1]
-        }
-
-    logger.debug(
-        f"Executing RESTORE DATABASE for {DATABASE_NAME} from {filepath}...")
-
-    # Restore database from backup
-    cursor.execute(f"""
-        RESTORE DATABASE {DATABASE_NAME} FROM DISK=N'{filepath}' WITH REPLACE,
-        MOVE '{files['D']['logical_name']}' TO '{mssql_data.joinpath(files['D']['physical_name'])}',
-        MOVE '{files['L']['logical_name']}' TO '{mssql_data.joinpath(files['L']['physical_name'])}'
-        """)
-
-    while cursor.nextset():
-        logger.info("Restoring databse...")
+    except Exception as e:
+        conn.rollback()
+        logger.error(f"Failed to restore database: {e}")
+        return
 
     logger.info(
         f"Database {DATABASE_NAME} backup restored successfully from {filepath}")

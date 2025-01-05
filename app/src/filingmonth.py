@@ -1,4 +1,5 @@
 from datetime import date
+
 import nepali_datetime
 from pyBSDate import bsdate
 from pyBSDate.DateConverter import _bs_to_ad
@@ -9,18 +10,17 @@ from src.date_range import ADDateRange, BSDateRange
 
 class FilingMonth:
     """
-        FilingMonth represents the nepali month for which VAT reports
-        will be prepared.
+    FilingMonth represents the nepali month for which VAT reports
+    will be prepared.
 
-        Args:
-            year (int): Year according to Nepali Calander.
-            month (int): Month according to Nepali Calander.
+    Args:
+        year (int): Year according to Nepali Calander.
+        month (int): Month according to Nepali Calander.
     """
 
     def __init__(self, year: int, month: int):
-
         if not (isinstance(year, int) and isinstance(month, int)):
-            raise TypeError('Please provide year and month as int')
+            raise TypeError("Please provide year and month as int")
         self.year = year
         self.month = month
         self.name = get_month_name_np(self.month)
@@ -36,11 +36,11 @@ class FilingMonth:
         """
         Returns date range for the BS month in BS format
         """
-        last_day = nepali_datetime._days_in_month(
-            year=self.year, month=self.month)
+        last_day = nepali_datetime._days_in_month(year=self.year, month=self.month)
+        print(f"DEBUG DATE: {self.year} {self.month} {last_day}")
         return BSDateRange(
             bsdate(year=self.year, month=self.month, day=1),
-            bsdate(year=self.year, month=self.month, day=last_day)
+            bsdate(year=self.year, month=self.month, day=last_day),
         )
 
     def get_AD_date_range(self) -> ADDateRange:
@@ -55,9 +55,9 @@ class FilingMonth:
     def get_fiscal_year(self) -> str:
         """Returns the fiscal year as provided year and month."""
         if self.month > 3:
-            fiscal_year = f'{self.year}/{str(self.year+1)[2:]}'
+            fiscal_year = f"{self.year}/{str(self.year+1)[2:]}"
         else:
-            fiscal_year = f'{self.year-1}/{str(self.year)[2:]}'
+            fiscal_year = f"{self.year-1}/{str(self.year)[2:]}"
         return fiscal_year
 
     def nepali_month_name(self) -> str:

@@ -1,5 +1,5 @@
 nepali_datetime
-pyBSDate
+pyBSDate==0.3.1
 python-dotenv
 tomli
 pandas
